@@ -1,0 +1,30 @@
+PREFIX owl:<http://www.w3.org/2002/07/owl#>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX woc:<http://rdf.webofcode.org/woc/>
+PREFIX dbr:<http://dbpedia.org/resource/>
+PREFIX dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#>
+
+SELECT DISTINCT ?interface ?proxyClass ?realClass ?client 
+WHERE {
+	?interface a woc:Interface .
+	?realClass a woc:Class;
+	woc:implements ?interface .
+
+	?proxyClass a woc:Class;
+	woc:extends ?realClass;
+	woc:hasMethod ?method .
+
+	?method woc:references ?realClass .
+
+        ?client a woc:Class;
+	 woc:hasMethod ?main .
+
+         ?main woc:references ?interface #proxyClass
+	 
+	FILTER (
+		?client != ?proxyClass
+	)
+
+}
+LIMIT 15

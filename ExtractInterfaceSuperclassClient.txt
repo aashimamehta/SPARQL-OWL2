@@ -1,0 +1,39 @@
+PREFIX owl:<http://www.w3.org/2002/07/owl#>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX woc:<http://rdf.webofcode.org/woc/>
+PREFIX dbr:<http://dbpedia.org/resource/>
+PREFIX dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#>
+
+SELECT DISTINCT ?superClass ?interface ?client (COUNT(DISTINCT ?class) as ?count)
+WHERE {
+	?class a woc:Class;
+		woc:extends* ?superClass .
+	?interface a woc:Interface .
+
+        ?client a woc:Class;
+        woc:hasMethod ?main .
+
+}
+GROUP BY ?superClass ?interface ?client #?realClass ?proxyClass
+ORDER BY DESC(?count)
+
+LIMIT 3
+
+
+
+
+#LIMIT 20
+#sparql --query codeontology\queries\SampleTestQuery.rq --data codeontology\parser\testprojects\SimplestProxyExample.nt
+#sparql --query codeontology/queries/ProxyDesignQuery.rq --data codeontology/parser/testprojects/openjdk8.nt
+#  ?realClass a woc:Class;
+
+#?interface woc:hasinterface ?interface ;
+#         woc:hasType ?method .
+#  ?class woc:hasField ?field ;
+#         woc:hasMethod ?method .
+#  ?field woc:hasModifier woc:Static , woc:Private ;
+#         woc:hasType ?class .
+#  ?method woc:returns ?field ;
+#          woc:hasModifier woc:Static , woc:Public 
+#          .FILTER regex(str(?class), "Proxy") . 
